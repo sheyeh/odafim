@@ -15,6 +15,11 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
+/**
+ * Main implementation. Includes the entry point {@link #main(String...) to run the results.
+ * Iterates over all thew results and prints a report per town and an aggregated result.
+ *
+ */
 public class Main {
 
     // Method 1: Compare the case when all agreements are in place to the case

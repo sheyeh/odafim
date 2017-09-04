@@ -7,10 +7,19 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
+/**
+ * Utility class with methods for the actual computation of seats allocation, given the
+ * number of votes each party received in the elections.
+ *
+ */
 public class Odafim {
 
 	private static boolean use_bader_ofer = false;
 
+	/**
+	 * Returns a string that describes which formula was used: bader-ofer or the "regular" one.
+	 * @return a string that describes which formula was used: bader-ofer or the "regular" one.
+	 */
 	public static String formula() {
 		return "\n" + "שיטת חישוב מנדטים : "
 		    + (use_bader_ofer ? "באדר עופר" : "מוניציפאלי");
@@ -120,6 +129,12 @@ public class Odafim {
 		return mandates;
 	}
 
+	/**
+	 * Bader-ofer calculation of number of seats given number of votes
+	 * @param votes number of votes. It is assumed all passed ahuz-hasima.
+	 * @param T number of seats in the counsel
+	 * @return array with number of seats per party
+	 */
 	static Integer[] baderofer(Integer[] votes, int T) {
 		int N = votes.length;
 		int total = total(votes);
@@ -166,6 +181,10 @@ public class Odafim {
 		return t;
 	}
 
+	/**
+	 * Print the entries of an array as a list.
+	 * @param mandates the entries to print
+	 */
 	private static void print(Integer[] mandates) {
 		System.out.println(Arrays.asList(mandates));
 	}
@@ -256,7 +275,13 @@ public class Odafim {
 			}
 		}
 	}
-	
+
+	/**
+	 * Find the index of a given string in a string array.
+	 * @param array the array in which to look for the string
+	 * @param val the value to look for
+	 * @return the index where the value is, -1 if not found
+	 */
 	static int find(String[] array, String val) {
 		for (int i = 0; i < array.length; i++) {
 			if (array[i].equals(val)) {
