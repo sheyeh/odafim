@@ -16,8 +16,8 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
 /**
- * Main implementation. Includes the entry point {@link #main(String...) to run the results.
- * Iterates over all thew results and prints a report per town and an aggregated result.
+ * Main implementation. Includes the entry point {@link #main(String...)} to run the analysis.
+ * Iterates over all the elecction results and prints a report per town and an aggregated result.
  *
  */
 public class Main {
@@ -50,17 +50,40 @@ public class Main {
         }
     }
 
+    /**
+     * Map from town ID to name.
+     */
     private static Map<Integer, String> townsMap = new HashMap<>();
+    /**
+     * Total number of voters per town.
+     */
     private static Map<Integer, Integer> votersMap = new HashMap<>();
+    /**
+     * Map from town ID to party letters to party name.
+     */
     private static Map<Integer, Map<String, String>> partyNames = new HashMap<>();
+    /**
+     * Map from town ID to party letters to party votes.
+     */
     private static Map<Integer, Map<String, Integer>> partyVotes = new HashMap<>();
+    /**
+     * Map from town ID to party letters to party seats as reported in the results file.
+     */
     private static Map<Integer, Map<String, Integer>> partySeats = new HashMap<>();
+    /**
+     * Map from town ID to pairs of agreements (heskemim)
+     */
     private static Map<Integer, Map<String, String>> agreements = new HashMap<>();
 
     private static final String HITKASHRUYOT = "התקשרויות בין רשימות";
     private static final String YISHUVIM = "רשימת הישובים";
     private static final String MANDATIM = "רשימות ומועמדים";
 
+    /**
+     * Read XML file and parse it.
+     * @param stream file input stream for the file with the elections results
+     * @throws Exception if parsing or handling the file fail
+     */
     private static void loadStream(FileInputStream stream) throws Exception {
         Document doc = DocumentBuilderFactory.newInstance().newDocumentBuilder().parse(stream);
         NodeList rows = doc.getElementsByTagName("Row");
@@ -116,6 +139,10 @@ public class Main {
         doubleNullAgreements += doubleNullAgreement;
     }
 
+    /**
+     * Parse town data.
+     * @param cells an XML node
+     */
     private static void yishuv(NodeList cells) {
         String townName = textContent(cells, 1);
         int townId = numContent(cells, 3);
@@ -132,6 +159,10 @@ public class Main {
         }
     }
 
+    /**
+     * Parse agreement details.
+     * @param cells an XML node
+     */
     private static void hitkashrut(NodeList cells) {
         int townId = numContent(cells, 3);
         String party1 = textContent(cells, 5);
@@ -139,6 +170,10 @@ public class Main {
         agreements.get(townId).put(party1, party2);
     }
 
+    /**
+     * Parse voting and seats data.
+     * @param cells an XML node
+     */
     private static void mandatim(NodeList cells) {
         int townId = numContent(cells, 3);
         String partyLetters = textContent(cells, 5);
@@ -154,14 +189,17 @@ public class Main {
         seatsMap.put(partyLetters, seats);
     }
 
-    public static String textContent(NodeList nodes, int i) {
+    private static String textContent(NodeList nodes, int i) {
         return nodes.item(i).getFirstChild().getTextContent();
     }
 
-    public static int numContent(NodeList nodes, int i) {
+    private static int numContent(NodeList nodes, int i) {
         return Integer.valueOf(textContent(nodes, i));
     }
 
+    /**
+     * After parsing, process all the data.
+     */
     private static void process() {
         for (int townId : townsMap.keySet()) {
             System.out.println(townsMap.get(townId));
@@ -204,7 +242,7 @@ public class Main {
             Integer[] real_election_seats = Odafim.mandates(votes, totalSeats, heskemim);
             System.out.print("תוצאות מחושבות ");
             System.out.println(Arrays.asList(real_election_seats));
-//            System.out.println(Arrays.asList(real_election_seats) + " תוצאות מחושבות");
+            //System.out.println(Arrays.asList(real_election_seats) + " תוצאות מחושבות");
             // Cancel individual agreements
             if (agreements.get(townId).isEmpty()) {
                 System.out.println("אין הסכמים");
@@ -229,7 +267,7 @@ public class Main {
                 Integer[] no_agreements_seats = Odafim.mandates(votes, totalSeats, heskemim_no_agreements);
                 System.out.println(Arrays.asList(no_agreements_seats));
                 if (Arrays.equals(real_election_seats, no_agreements_seats)) {
-//                    System.out.println("ללא שינוי");
+                	//System.out.println("ללא שינוי");
                     allCancelNeutralCounter++;
                 } else {
                     allCancelChangeCounter++;
@@ -291,7 +329,7 @@ public class Main {
     public static void main(String...args) {
         try {
             loadFile("/Users/shai/Dropbox/Public/הסכמי עודפים/נתוני הבחירות לרשויות המקומיות 2008.xml");
-//            loadFile("/Users/shai/Dropbox/Public/הסכמי עודפים/נתוני הבחירות לרשויות המקומיות שלא במועד הכללי 2003-2008.xml");
+            //loadFile("/Users/shai/Dropbox/Public/הסכמי עודפים/נתוני הבחירות לרשויות המקומיות שלא במועד הכללי 2003-2008.xml");
             print();
             process();
             report();
