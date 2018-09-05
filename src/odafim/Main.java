@@ -125,11 +125,11 @@ public class Main {
         int totalSeats = seats.values().stream().mapToInt(Integer::valueOf).sum();
         System.out.println(townsMap.get(townId) + " [" + townId + "] : " + votersMap.get(townId) + " בז\"ב \\ " + totalSeats + " מושבים");
         int ksherim = partyVotes.get(townId).values().stream().mapToInt(Integer::valueOf).sum();
-        int moded = (int)Math.floor(ksherim / totalSeats * 0.75);
-        System.out.println("קולות כשרים : " + ksherim + " מודד : " + moded);
+        int saf = (int)Math.floor(ksherim / totalSeats * 0.75);
+        System.out.println("קולות כשרים : " + ksherim + " סף : " + saf);
         for (String party : partyNames.get(townId).keySet()) {
         	boolean passModedButNoSeats =
-        			partyVotes.get(townId).get(party) >= moded && seats.get(party) == 0;
+        			partyVotes.get(townId).get(party) >= saf && seats.get(party) == 0;
             System.out.println(
             		(passModedButNoSeats ? "X" : " ")  +
                     "    " + partyNames.get(townId).get(party) + " (" + party + ") : "
