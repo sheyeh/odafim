@@ -112,6 +112,7 @@ public class Main {
      * Print all towns.
      */
     private static void print() {
+    	System.out.println("X : עברו את אחוז החסימה אך קיבלו אפס מנדטים\n");
         townsMap.keySet().stream().forEach(Main::printTown);
     }
 
@@ -123,8 +124,14 @@ public class Main {
         Map<String, Integer> seats = partySeats.get(townId);
         int totalSeats = seats.values().stream().mapToInt(Integer::valueOf).sum();
         System.out.println(townsMap.get(townId) + " [" + townId + "] : " + votersMap.get(townId) + " בז\"ב \\ " + totalSeats + " מושבים");
+        int ksherim = partyVotes.get(townId).values().stream().mapToInt(Integer::valueOf).sum();
+        int moded = (int)Math.floor(ksherim / totalSeats * 0.75);
+        System.out.println("קולות כשרים : " + ksherim + " מודד : " + moded);
         for (String party : partyNames.get(townId).keySet()) {
+        	boolean passModedButNoSeats =
+        			partyVotes.get(townId).get(party) >= moded && seats.get(party) == 0;
             System.out.println(
+            		(passModedButNoSeats ? "X" : " ")  +
                     "    " + partyNames.get(townId).get(party) + " (" + party + ") : "
                     + partyVotes.get(townId).get(party) + " \\ " + seats.get(party));
         }
@@ -235,7 +242,6 @@ public class Main {
                 }
             }
             foo.add(partiesPassThreshold, heskemimOvrim);
-            System.out.println(heskemimOvrim);
             // Method 1: compare the case when all agreements in place to the case
             // when individual agreement is cancelled but all other agreements stay.
             // All agreements in place
@@ -328,7 +334,7 @@ public class Main {
 
     public static void main(String...args) {
         try {
-            loadFile("/Users/shai/Dropbox/Public/הסכמי עודפים/נתוני הבחירות לרשויות המקומיות 2008.xml");
+            loadFile("/Users/shai/Dropbox/Public/הסכמי עודפים/נתוני הבחירות לרשויות המקומיות 2013.xml");
             //loadFile("/Users/shai/Dropbox/Public/הסכמי עודפים/נתוני הבחירות לרשויות המקומיות שלא במועד הכללי 2003-2008.xml");
             print();
             process();
